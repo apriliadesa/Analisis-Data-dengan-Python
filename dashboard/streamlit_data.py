@@ -25,7 +25,7 @@ max_date = day_data["dteday"].max()
 
 with st.sidebar:
     # Menambahkan logo perusahaan
-    st.image("https://jugnoo.io/wp-content/uploads/2022/05/on-demand-bike-sharing-1-1024x506.jpg")
+    st.image("https://www.vecteezy.com/vector-art/9568188-bike-rental-station-terminal-on-modern-cityscape-street-bicycle-rent-location-city-map-on-self-service-counter-screen-public-cycle-transport-sharing-urban-eco-transportation-vector-banner")
     
     # Mengambil start_date & end_date dari date_input
     start_date, end_date = st.date_input(
