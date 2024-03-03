@@ -25,7 +25,7 @@ max_date = day_data["dteday"].max()
 
 with st.sidebar:
     # Menambahkan logo perusahaan
-    st.image("https://static.vecteezy.com/system/resources/thumbnails/009/568/188/small/bike-rental-station-terminal-on-modern-cityscape-street-bicycle-rent-location-city-map-on-self-service-counter-screen-public-cycle-transport-sharing-urban-eco-transportation-banner-vector.jpg")
+    st.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5d8jv89Aazu1BdpobHA9hgNNs7gbU23VbgujfpjcQ39G-o1479mRQDFPBQMQtrW5mr1Y&usqp=CAU")
     
     # Mengambil start_date & end_date dari date_input
     start_date, end_date = st.date_input(
