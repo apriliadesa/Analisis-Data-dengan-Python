@@ -6,7 +6,7 @@ import seaborn as sns
 sns.set(style='whitegrid')
 
 # Load the data
-hour_data = pd.read_csv("hour_data.csv")
+hour_data = pd.read_csv("https://raw.githubusercontent.com/apriliadesa/Analisis-Data-dengan-Python/main/dashboard/hour_data.csv")
 day_data = pd.read_csv("day_data.csv")
 
 # Sidebar to select dataset
