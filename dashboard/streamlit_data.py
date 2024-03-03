@@ -6,8 +6,8 @@ import seaborn as sns
 sns.set(style='whitegrid')
 
 # Load the data
-hour_data = pd.read_csv("data/hour_data.csv")
-day_data = pd.read_csv("data/day_data.csv")
+hour_data = pd.read_csv("hour_data.csv")
+day_data = pd.read_csv("day_data.csv")
 
 # Sidebar to select dataset
 dataset = st.sidebar.radio("Select Dataset", ("Hourly", "Daily"))
