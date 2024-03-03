@@ -7,7 +7,7 @@ sns.set(style='whitegrid')
 
 # Load the data
 hour_data = pd.read_csv("https://raw.githubusercontent.com/apriliadesa/Analisis-Data-dengan-Python/main/dashboard/hour_data.csv")
-day_data = pd.read_csv("day_data.csv")
+day_data = pd.read_csv("https://raw.githubusercontent.com/apriliadesa/Analisis-Data-dengan-Python/main/dashboard/day_data.csv")
 
 # Sidebar to select dataset
 dataset = st.sidebar.radio("Select Dataset", ("Hourly", "Daily"))
