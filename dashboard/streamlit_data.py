@@ -106,19 +106,14 @@ else:
 month_order = ["January", "February", "March", "April", "May", "June", "July",
                "August", "September", "October", "November", "December"]
 
-st.subheader("Bike Rental Count by Month")
-
-# Fungsi untuk menentukan warna highlight
-def highlight_max(df, column="cnt"):
-    max_month = df.loc[df[column].idxmax(), "mnth"]
-    return ["orange" if m == max_month else "grey" for m in df["mnth"]]
-
 # Mapping angka bulan -> nama bulan
 month_map = {
     1: "January", 2: "February", 3: "March", 4: "April",
     5: "May", 6: "June", 7: "July", 8: "August",
     9: "September", 10: "October", 11: "November", 12: "December"
 }
+
+st.subheader("Bike Rental Count by Month")
 
 if dataset == "Hourly":
     year_2011_hour = main_hour[main_hour['yr'] == 2011]
@@ -127,30 +122,24 @@ if dataset == "Hourly":
     monthly_rentals_2011_hour = year_2011_hour.groupby('mnth')['cnt'].mean().reset_index()
     monthly_rentals_2012_hour = year_2012_hour.groupby('mnth')['cnt'].mean().reset_index()
 
-    # Konversi angka bulan ke nama
+    # Ganti angka bulan ke nama
     monthly_rentals_2011_hour['mnth'] = monthly_rentals_2011_hour['mnth'].map(month_map)
     monthly_rentals_2012_hour['mnth'] = monthly_rentals_2012_hour['mnth'].map(month_map)
 
-    # Sort sesuai month_order
-    monthly_rentals_2011_hour['mnth'] = pd.Categorical(monthly_rentals_2011_hour['mnth'], categories=month_order, ordered=True)
-    monthly_rentals_2012_hour['mnth'] = pd.Categorical(monthly_rentals_2012_hour['mnth'], categories=month_order, ordered=True)
-    monthly_rentals_2011_hour = monthly_rentals_2011_hour.sort_values('mnth')
-    monthly_rentals_2012_hour = monthly_rentals_2012_hour.sort_values('mnth')
+    # Warna highlight: July untuk 2011, June untuk 2012
+    colors_2011 = ["orange" if m == "July" else "grey" for m in monthly_rentals_2011_hour['mnth']]
+    colors_2012 = ["orange" if m == "June" else "grey" for m in monthly_rentals_2012_hour['mnth']]
 
-    # Buat warna highlight
-    colors_2011 = highlight_max(monthly_rentals_2011_hour)
-    colors_2012 = highlight_max(monthly_rentals_2012_hour)
-        
     fig, axes = plt.subplots(1, 2, figsize=(12, 6))
     sns.barplot(data=monthly_rentals_2011_hour, x='mnth', y='cnt',
-                ax=axes[0], palette=colors_2011)
+                ax=axes[0], order=month_order, palette=colors_2011)
     axes[0].set_title('Average Monthly Rentals in 2011')
     axes[0].set_xlabel('Month')
     axes[0].set_ylabel('Average Rentals')
     axes[0].tick_params(axis='x', rotation=45)
     
     sns.barplot(data=monthly_rentals_2012_hour, x='mnth', y='cnt',
-                ax=axes[1], palette=colors_2012)
+                ax=axes[1], order=month_order, palette=colors_2012)
     axes[1].set_title('Average Monthly Rentals in 2012')
     axes[1].set_xlabel('Month')
     axes[1].set_ylabel('Average Rentals')
@@ -166,30 +155,24 @@ else:
     monthly_rentals_2011_daily = year_2011_daily.groupby('mnth')['cnt'].mean().reset_index()
     monthly_rentals_2012_daily = year_2012_daily.groupby('mnth')['cnt'].mean().reset_index()
 
-    # Konversi angka bulan ke nama
+    # Ganti angka bulan ke nama
     monthly_rentals_2011_daily['mnth'] = monthly_rentals_2011_daily['mnth'].map(month_map)
     monthly_rentals_2012_daily['mnth'] = monthly_rentals_2012_daily['mnth'].map(month_map)
 
-    # Sort sesuai month_order
-    monthly_rentals_2011_daily['mnth'] = pd.Categorical(monthly_rentals_2011_daily['mnth'], categories=month_order, ordered=True)
-    monthly_rentals_2012_daily['mnth'] = pd.Categorical(monthly_rentals_2012_daily['mnth'], categories=month_order, ordered=True)
-    monthly_rentals_2011_daily = monthly_rentals_2011_daily.sort_values('mnth')
-    monthly_rentals_2012_daily = monthly_rentals_2012_daily.sort_values('mnth')
+    # Warna highlight: July untuk 2011, June untuk 2012
+    colors_2011 = ["orange" if m == "July" else "grey" for m in monthly_rentals_2011_daily['mnth']]
+    colors_2012 = ["orange" if m == "June" else "grey" for m in monthly_rentals_2012_daily['mnth']]
 
-    # Buat warna highlight
-    colors_2011 = highlight_max(monthly_rentals_2011_daily)
-    colors_2012 = highlight_max(monthly_rentals_2012_daily)
-        
     fig, axes = plt.subplots(1, 2, figsize=(12, 6))
     sns.barplot(data=monthly_rentals_2011_daily, x='mnth', y='cnt',
-                ax=axes[0], palette=colors_2011)
+                ax=axes[0], order=month_order, palette=colors_2011)
     axes[0].set_title('Average Monthly Rentals in 2011')
     axes[0].set_xlabel('Month')
     axes[0].set_ylabel('Average Rentals')
     axes[0].tick_params(axis='x', rotation=45)
     
     sns.barplot(data=monthly_rentals_2012_daily, x='mnth', y='cnt',
-                ax=axes[1], palette=colors_2012)
+                ax=axes[1], order=month_order, palette=colors_2012)
     axes[1].set_title('Average Monthly Rentals in 2012')
     axes[1].set_xlabel('Month')
     axes[1].set_ylabel('Average Rentals')
@@ -197,6 +180,7 @@ else:
 
     fig.tight_layout()
     st.pyplot(fig)
+
 
 # --- Clustering Manual ---
 st.subheader("Clustering : Time Group & Demand Group")
