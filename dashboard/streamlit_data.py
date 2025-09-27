@@ -122,24 +122,20 @@ if dataset == "Hourly":
     monthly_rentals_2011_hour = year_2011_hour.groupby('mnth')['cnt'].mean().reset_index()
     monthly_rentals_2012_hour = year_2012_hour.groupby('mnth')['cnt'].mean().reset_index()
 
-    # Ganti angka bulan ke nama
-    monthly_rentals_2011_hour['mnth'] = monthly_rentals_2011_hour['mnth'].map(month_map)
-    monthly_rentals_2012_hour['mnth'] = monthly_rentals_2012_hour['mnth'].map(month_map)
-
-    # Warna highlight: July untuk 2011, June untuk 2012
-    colors_2011 = ["orange" if m == "July" else "grey" for m in monthly_rentals_2011_hour['mnth']]
-    colors_2012 = ["orange" if m == "June" else "grey" for m in monthly_rentals_2012_hour['mnth']]
+    # Buat palette highlight
+    palette_2011 = ["C0"] * 12
+    palette_2012 = ["C0"] * 12
+    palette_2011[6] = "orange"   # Juli (7) -> index 6
+    palette_2012[5] = "red"      # Juni (6) -> index 5
 
     fig, axes = plt.subplots(1, 2, figsize=(12, 6))
-    sns.barplot(data=monthly_rentals_2011_hour, x='mnth', y='cnt',
-                ax=axes[0], order=month_order, palette=colors_2011)
+    sns.barplot(data=monthly_rentals_2011_hour, x='mnth', y='cnt', ax=axes[0], order=month_order, palette=palette_2011)
     axes[0].set_title('Average Monthly Rentals in 2011')
     axes[0].set_xlabel('Month')
     axes[0].set_ylabel('Average Rentals')
     axes[0].tick_params(axis='x', rotation=45)
     
-    sns.barplot(data=monthly_rentals_2012_hour, x='mnth', y='cnt',
-                ax=axes[1], order=month_order, palette=colors_2012)
+    sns.barplot(data=monthly_rentals_2012_hour, x='mnth', y='cnt', ax=axes[1], order=month_order, palette=palette_2012)
     axes[1].set_title('Average Monthly Rentals in 2012')
     axes[1].set_xlabel('Month')
     axes[1].set_ylabel('Average Rentals')
@@ -155,24 +151,20 @@ else:
     monthly_rentals_2011_daily = year_2011_daily.groupby('mnth')['cnt'].mean().reset_index()
     monthly_rentals_2012_daily = year_2012_daily.groupby('mnth')['cnt'].mean().reset_index()
 
-    # Ganti angka bulan ke nama
-    monthly_rentals_2011_daily['mnth'] = monthly_rentals_2011_daily['mnth'].map(month_map)
-    monthly_rentals_2012_daily['mnth'] = monthly_rentals_2012_daily['mnth'].map(month_map)
-
-    # Warna highlight: July untuk 2011, June untuk 2012
-    colors_2011 = ["orange" if m == "July" else "grey" for m in monthly_rentals_2011_daily['mnth']]
-    colors_2012 = ["orange" if m == "June" else "grey" for m in monthly_rentals_2012_daily['mnth']]
+    # Buat palette highlight
+    palette_2011 = ["C0"] * 12
+    palette_2012 = ["C0"] * 12
+    palette_2011[6] = "orange"   # Juli (7) -> index 6
+    palette_2012[5] = "red"      # Juni (6) -> index 5
 
     fig, axes = plt.subplots(1, 2, figsize=(12, 6))
-    sns.barplot(data=monthly_rentals_2011_daily, x='mnth', y='cnt',
-                ax=axes[0], order=month_order, palette=colors_2011)
+    sns.barplot(data=monthly_rentals_2011_daily, x='mnth', y='cnt', ax=axes[0], order=month_order, palette=palette_2011)
     axes[0].set_title('Average Monthly Rentals in 2011')
     axes[0].set_xlabel('Month')
     axes[0].set_ylabel('Average Rentals')
     axes[0].tick_params(axis='x', rotation=45)
     
-    sns.barplot(data=monthly_rentals_2012_daily, x='mnth', y='cnt',
-                ax=axes[1], order=month_order, palette=colors_2012)
+    sns.barplot(data=monthly_rentals_2012_daily, x='mnth', y='cnt', ax=axes[1], order=month_order, palette=palette_2012)
     axes[1].set_title('Average Monthly Rentals in 2012')
     axes[1].set_xlabel('Month')
     axes[1].set_ylabel('Average Rentals')
@@ -180,6 +172,7 @@ else:
 
     fig.tight_layout()
     st.pyplot(fig)
+
 
 
 # --- Clustering Manual ---
