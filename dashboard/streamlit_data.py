@@ -25,7 +25,7 @@ max_date = day_data["dteday"].max()
 
 with st.sidebar:
     st.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5d8jv89Aazu1BdpobHA9hgNNs7gbU23VbgujfpjcQ39G-o1479mRQDFPBQMQtrW5mr1Y&usqp=CAU")
-    st.write("Kredit : vecteezy")
+    st.write("Img Source : vecteezy")
     
     start_date, end_date = st.date_input(
         label='Rentang Waktu',
