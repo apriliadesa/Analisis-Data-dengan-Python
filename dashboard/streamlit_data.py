@@ -19,13 +19,9 @@ day_data.reset_index(inplace=True)
 for column in datetime_columns:
     day_data[column] = pd.to_datetime(day_data[column])
 
-# Pastikan kolom dteday jadi datetime
-day_data["dteday"] = pd.to_datetime(day_data["dteday"])
-hour_data["dteday"] = pd.to_datetime(hour_data["dteday"])
-
-# Filter date range
-min_date = day_data["dteday"].min().date()
-max_date = day_data["dteday"].max().date()
+# Filter data
+min_date = day_data["dteday"].min()
+max_date = day_data["dteday"].max()
 
 with st.sidebar:
     st.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5d8jv89Aazu1BdpobHA9hgNNs7gbU23VbgujfpjcQ39G-o1479mRQDFPBQMQtrW5mr1Y&usqp=CAU")
@@ -38,16 +34,11 @@ with st.sidebar:
         value=[min_date, max_date]
     )
 
-# Ubah ke datetime64 untuk filtering
-start_date = pd.to_datetime(start_date)
-end_date = pd.to_datetime(end_date)
+main_day = day_data[(day_data["dteday"] >= str(start_date)) & 
+                (day_data["dteday"] <= str(end_date))]
 
-main_day = day_data[(day_data["dteday"] >= start_date) & 
-                    (day_data["dteday"] <= end_date)]
-
-main_hour = hour_data[(hour_data["dteday"] >= start_date) & 
-                      (hour_data["dteday"] <= end_date)]
-
+main_hour = hour_data[(hour_data["dteday"] >= str(start_date)) & 
+                (hour_data["dteday"] <= str(end_date))]
 
 # Display the selected dataset
 # Display the selected dataset
