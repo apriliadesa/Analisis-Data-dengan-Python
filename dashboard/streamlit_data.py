@@ -151,3 +151,52 @@ else:
 
     fig.tight_layout()
     st.pyplot(fig)
+
+# --- Clustering Manual ---
+st.subheader("Clustering : Time Group & Demand Group")
+if dataset == "Hourly":
+    # Group jam menjadi kategori waktu
+    def time_group(hour):
+        if 0 <= hour < 7:
+            return "Dini Hari"
+        elif 7 <= hour < 13:
+            return "Pagi"
+        elif 13 <= hour < 19:
+            return "Siang"
+        else:
+            return "Malam"
+
+    main_hour["time_group"] = main_hour["hr"].apply(time_group)
+
+    # Binning demand (cnt)
+    bins = [0, 100, 500, main_hour["cnt"].max()]
+    labels = ["Low", "Medium", "High"]
+    main_hour["demand_group"] = pd.cut(main_hour["cnt"], bins=bins, labels=labels, include_lowest=True)
+
+    st.write("Preview dengan Clustering Manual:")
+    st.write(main_hour[["hr", "cnt", "time_group", "demand_group"]].head())
+
+    # Visualisasi clustering
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.countplot(data=main_hour, x="time_group", hue="demand_group", ax=ax)
+    ax.set_title("Distribusi Demand berdasarkan Kelompok Waktu")
+    ax.set_xlabel("Kelompok Waktu")
+    ax.set_ylabel("Jumlah")
+    st.pyplot(fig)
+
+else:
+    # Binning demand untuk data harian
+    bins = [0, 1000, 4000, main_day["cnt"].max()]
+    labels = ["Low", "Medium", "High"]
+    main_day["demand_group"] = pd.cut(main_day["cnt"], bins=bins, labels=labels, include_lowest=True)
+
+    st.write("Preview dengan Clustering Manual:")
+    st.write(main_day[["dteday", "cnt", "demand_group"]].head())
+
+    # Visualisasi clustering
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.countplot(data=main_day, x="demand_group", ax=ax)
+    ax.set_title("Distribusi Demand Harian")
+    ax.set_xlabel("Kelompok Demand")
+    ax.set_ylabel("Jumlah Hari")
+    st.pyplot(fig)
