@@ -107,29 +107,33 @@ month_order = ["January", "February", "March", "April", "May", "June", "July",
                "August", "September", "October", "November", "December"]
 
 st.subheader("Bike Rental Count by Month")
+
+# Fungsi untuk menentukan warna highlight
+def highlight_max(df, column="cnt"):
+    max_month = df.loc[df[column].idxmax(), "mnth"]
+    return ["orange" if m == max_month else "grey" for m in df["mnth"]]
+
 if dataset == "Hourly":
     year_2011_hour = main_hour[main_hour['yr'] == 2011]
     year_2012_hour = main_hour[main_hour['yr'] == 2012]
     
     monthly_rentals_2011_hour = year_2011_hour.groupby('mnth')['cnt'].mean().reset_index()
     monthly_rentals_2012_hour = year_2012_hour.groupby('mnth')['cnt'].mean().reset_index()
-    
-    # cari nilai max tiap tahun
-    max_month_2011 = monthly_rentals_2011_hour['cnt'].idxmax()
-    max_month_2012 = monthly_rentals_2012_hour['cnt'].idxmax()
 
-    # buat warna default abu, highlight oranye
-    colors_2011 = ['grey' if i != max_month_2011 else 'orange' for i in range(len(monthly_rentals_2011_hour))]
-    colors_2012 = ['grey' if i != max_month_2012 else 'orange' for i in range(len(monthly_rentals_2012_hour))]
+    # Buat warna highlight
+    colors_2011 = highlight_max(monthly_rentals_2011_hour)
+    colors_2012 = highlight_max(monthly_rentals_2012_hour)
         
     fig, axes = plt.subplots(1, 2, figsize=(12, 6))
-    sns.barplot(data=monthly_rentals_2011_hour, x='mnth', y='cnt', ax=axes[0], order=month_order, palette=colors_2011)
+    sns.barplot(data=monthly_rentals_2011_hour, x='mnth', y='cnt',
+                ax=axes[0], order=month_order, palette=colors_2011)
     axes[0].set_title('Average Monthly Rentals in 2011')
     axes[0].set_xlabel('Month')
     axes[0].set_ylabel('Average Rentals')
     axes[0].tick_params(axis='x', rotation=45)
     
-    sns.barplot(data=monthly_rentals_2012_hour, x='mnth', y='cnt', ax=axes[1], order=month_order, palette=colors_2012)
+    sns.barplot(data=monthly_rentals_2012_hour, x='mnth', y='cnt',
+                ax=axes[1], order=month_order, palette=colors_2012)
     axes[1].set_title('Average Monthly Rentals in 2012')
     axes[1].set_xlabel('Month')
     axes[1].set_ylabel('Average Rentals')
@@ -137,29 +141,28 @@ if dataset == "Hourly":
 
     fig.tight_layout()
     st.pyplot(fig)
+
 else:
     year_2011_daily = main_day[main_day['yr'] == 2011]
     year_2012_daily = main_day[main_day['yr'] == 2012]
     
     monthly_rentals_2011_daily = year_2011_daily.groupby('mnth')['cnt'].mean().reset_index()
     monthly_rentals_2012_daily = year_2012_daily.groupby('mnth')['cnt'].mean().reset_index()
-    
-    # cari nilai max tiap tahun
-    max_month_2011 = monthly_rentals_2011_daily['cnt'].idxmax()
-    max_month_2012 = monthly_rentals_2012_daily['cnt'].idxmax()
 
-    # buat warna default abu, highlight oranye
-    colors_2011 = ['grey' if i != max_month_2011 else 'orange' for i in range(len(monthly_rentals_2011_daily))]
-    colors_2012 = ['grey' if i != max_month_2012 else 'orange' for i in range(len(monthly_rentals_2012_daily))]
+    # Buat warna highlight
+    colors_2011 = highlight_max(monthly_rentals_2011_daily)
+    colors_2012 = highlight_max(monthly_rentals_2012_daily)
         
     fig, axes = plt.subplots(1, 2, figsize=(12, 6))
-    sns.barplot(data=monthly_rentals_2011_daily, x='mnth', y='cnt', ax=axes[0], order=month_order, palette=colors_2011)
+    sns.barplot(data=monthly_rentals_2011_daily, x='mnth', y='cnt',
+                ax=axes[0], order=month_order, palette=colors_2011)
     axes[0].set_title('Average Monthly Rentals in 2011')
     axes[0].set_xlabel('Month')
     axes[0].set_ylabel('Average Rentals')
     axes[0].tick_params(axis='x', rotation=45)
     
-    sns.barplot(data=monthly_rentals_2012_daily, x='mnth', y='cnt', ax=axes[1], order=month_order, palette=colors_2012)
+    sns.barplot(data=monthly_rentals_2012_daily, x='mnth', y='cnt',
+                ax=axes[1], order=month_order, palette=colors_2012)
     axes[1].set_title('Average Monthly Rentals in 2012')
     axes[1].set_xlabel('Month')
     axes[1].set_ylabel('Average Rentals')
