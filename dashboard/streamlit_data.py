@@ -2,8 +2,8 @@ import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 import seaborn as sns
-import folium
-from streamlit_folium import st_folium
+#import folium
+#from streamlit_folium import st_folium
 
 sns.set(style='whitegrid')
 
@@ -91,13 +91,13 @@ rfm = dummy_df.groupby("customer_id").agg({
 }).rename(columns={"order_date": "Recency", "customer_id": "Frequency", "amount": "Monetary"})
 st.write(rfm)
 
-# --- 2. Geospatial Analysis ---
-st.subheader("Geospatial Analysis (Dummy Example)")
-locations = [(-6.2, 106.8), (-7.8, 110.4), (-6.9, 107.6)]  # Jakarta, Jogja, Bandung
-m = folium.Map(location=[-6.5, 107], zoom_start=6)
-for loc in locations:
-    folium.Marker(location=loc, popup="Bike Rental Station").add_to(m)
-st_folium(m, width=700, height=450)
+# # --- 2. Geospatial Analysis ---
+# st.subheader("Geospatial Analysis (Dummy Example)")
+# locations = [(-6.2, 106.8), (-7.8, 110.4), (-6.9, 107.6)]  # Jakarta, Jogja, Bandung
+# m = folium.Map(location=[-6.5, 107], zoom_start=6)
+# for loc in locations:
+#     folium.Marker(location=loc, popup="Bike Rental Station").add_to(m)
+# st_folium(m, width=700, height=450)
 
 # --- 3. Clustering (Manual Grouping + Binning) ---
 st.subheader("Clustering tanpa ML")
