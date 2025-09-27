@@ -125,8 +125,8 @@ if dataset == "Hourly":
     # Buat palette highlight
     palette_2011 = ["C0"] * 12
     palette_2012 = ["C0"] * 12
-    palette_2011[6] = "orange"   # Juli (7) -> index 6
-    palette_2012[5] = "red"      # Juni (6) -> index 5
+    palette_2011[5] = "orange"   # Juli (7) -> index 6
+    palette_2012[8] = "red"      # Juni (6) -> index 5
 
     fig, axes = plt.subplots(1, 2, figsize=(12, 6))
     sns.barplot(data=monthly_rentals_2011_hour, x='mnth', y='cnt', ax=axes[0], order=month_order, palette=palette_2011)
@@ -154,8 +154,8 @@ else:
     # Buat palette highlight
     palette_2011 = ["C0"] * 12
     palette_2012 = ["C0"] * 12
-    palette_2011[6] = "orange"   # Juli (7) -> index 6
-    palette_2012[5] = "red"      # Juni (6) -> index 5
+    palette_2011[5] = "orange"   # Juli (7) -> index 6
+    palette_2012[8] = "red"      # Juni (6) -> index 5
 
     fig, axes = plt.subplots(1, 2, figsize=(12, 6))
     sns.barplot(data=monthly_rentals_2011_daily, x='mnth', y='cnt', ax=axes[0], order=month_order, palette=palette_2011)
