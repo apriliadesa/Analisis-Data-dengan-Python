@@ -173,8 +173,8 @@ if dataset == "Hourly":
     labels = ["Low", "Medium", "High"]
     main_hour["demand_group"] = pd.cut(main_hour["cnt"], bins=bins, labels=labels, include_lowest=True)
 
-    st.write("Preview dengan Clustering Manual:")
-    st.write(main_hour[["hr", "cnt", "time_group", "demand_group"]].head())
+    # st.write("Preview dengan Clustering Manual:")
+    # st.write(main_hour[["hr", "cnt", "time_group", "demand_group"]].head())
 
     # Visualisasi clustering
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -190,8 +190,8 @@ else:
     labels = ["Low", "Medium", "High"]
     main_day["demand_group"] = pd.cut(main_day["cnt"], bins=bins, labels=labels, include_lowest=True)
 
-    st.write("Preview dengan Clustering Manual:")
-    st.write(main_day[["dteday", "cnt", "demand_group"]].head())
+    # st.write("Preview dengan Clustering Manual:")
+    # st.write(main_day[["dteday", "cnt", "demand_group"]].head())
 
     # Visualisasi clustering
     fig, ax = plt.subplots(figsize=(10, 6))
