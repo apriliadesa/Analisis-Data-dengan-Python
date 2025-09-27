@@ -41,53 +41,60 @@ main_hour = hour_data[(hour_data["dteday"] >= str(start_date)) &
                 (hour_data["dteday"] <= str(end_date))]
 
 # Display the selected dataset
+# Display the selected dataset
 if dataset == "Hourly":
     st.header("Hourly Bike Sharing Data")
     st.write(main_hour.head())
-
-    # --- RFM Analysis (tanpa Frequency) ---
-    main_hour["dteday"] = pd.to_datetime(main_hour["dteday"])
-    snapshot_date = main_hour["dteday"].max() + pd.Timedelta(days=1)
-
-    rfm = main_hour.groupby("dteday").agg({
-        "cnt": "sum"
-    }).reset_index()
-
-    rfm["Recency"] = (snapshot_date - rfm["dteday"]).dt.days
-    rfm["Monetary"] = rfm["cnt"]
-
-    rfm["R_Score"] = pd.qcut(rfm["Recency"], 4, labels=[4,3,2,1])
-    rfm["M_Score"] = pd.qcut(rfm["Monetary"], 4, labels=[1,2,3,4])
-
-    rfm["RFM_Segment"] = rfm["R_Score"].astype(str) + rfm["M_Score"].astype(str)
-    rfm["RFM_Score"] = rfm[["R_Score","M_Score"]].astype(int).sum(axis=1)
-
-    st.subheader("RFM Analysis (Hourly)")
-    st.dataframe(rfm.head(10))
-
 else:
     st.header("Daily Bike Sharing Data")
     st.write(main_day.head())
+# if dataset == "Hourly":
+#     st.header("Hourly Bike Sharing Data")
+#     st.write(main_hour.head())
 
-    # --- RFM Analysis (tanpa Frequency) ---
-    main_day["dteday"] = pd.to_datetime(main_day["dteday"])
-    snapshot_date = main_day["dteday"].max() + pd.Timedelta(days=1)
+#     # --- RFM Analysis (tanpa Frequency) ---
+#     main_hour["dteday"] = pd.to_datetime(main_hour["dteday"])
+#     snapshot_date = main_hour["dteday"].max() + pd.Timedelta(days=1)
 
-    rfm = main_day.groupby("dteday").agg({
-        "cnt": "sum"
-    }).reset_index()
+#     rfm = main_hour.groupby("dteday").agg({
+#         "cnt": "sum"
+#     }).reset_index()
 
-    rfm["Recency"] = (snapshot_date - rfm["dteday"]).dt.days
-    rfm["Monetary"] = rfm["cnt"]
+#     rfm["Recency"] = (snapshot_date - rfm["dteday"]).dt.days
+#     rfm["Monetary"] = rfm["cnt"]
 
-    rfm["R_Score"] = pd.qcut(rfm["Recency"], 4, labels=[4,3,2,1])
-    rfm["M_Score"] = pd.qcut(rfm["Monetary"], 4, labels=[1,2,3,4])
+#     rfm["R_Score"] = pd.qcut(rfm["Recency"], 4, labels=[4,3,2,1])
+#     rfm["M_Score"] = pd.qcut(rfm["Monetary"], 4, labels=[1,2,3,4])
 
-    rfm["RFM_Segment"] = rfm["R_Score"].astype(str) + rfm["M_Score"].astype(str)
-    rfm["RFM_Score"] = rfm[["R_Score","M_Score"]].astype(int).sum(axis=1)
+#     rfm["RFM_Segment"] = rfm["R_Score"].astype(str) + rfm["M_Score"].astype(str)
+#     rfm["RFM_Score"] = rfm[["R_Score","M_Score"]].astype(int).sum(axis=1)
 
-    st.subheader("RFM Analysis (Daily)")
-    st.dataframe(rfm.head(10))
+#     st.subheader("RFM Analysis (Hourly)")
+#     st.dataframe(rfm.head(10))
+
+# else:
+#     st.header("Daily Bike Sharing Data")
+#     st.write(main_day.head())
+
+#     # --- RFM Analysis (tanpa Frequency) ---
+#     main_day["dteday"] = pd.to_datetime(main_day["dteday"])
+#     snapshot_date = main_day["dteday"].max() + pd.Timedelta(days=1)
+
+#     rfm = main_day.groupby("dteday").agg({
+#         "cnt": "sum"
+#     }).reset_index()
+
+#     rfm["Recency"] = (snapshot_date - rfm["dteday"]).dt.days
+#     rfm["Monetary"] = rfm["cnt"]
+
+#     rfm["R_Score"] = pd.qcut(rfm["Recency"], 4, labels=[4,3,2,1])
+#     rfm["M_Score"] = pd.qcut(rfm["Monetary"], 4, labels=[1,2,3,4])
+
+#     rfm["RFM_Segment"] = rfm["R_Score"].astype(str) + rfm["M_Score"].astype(str)
+#     rfm["RFM_Score"] = rfm[["R_Score","M_Score"]].astype(int).sum(axis=1)
+
+#     st.subheader("RFM Analysis (Daily)")
+#     st.dataframe(rfm.head(10))
 
 
 # --- Visualization 1 ---
