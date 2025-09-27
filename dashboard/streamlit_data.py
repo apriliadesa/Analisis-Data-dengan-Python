@@ -41,7 +41,7 @@ main_day = day_data[(day_data["dteday"] >= str(start_date)) &
 main_hour = hour_data[(hour_data["dteday"] >= str(start_date)) & 
                 (hour_data["dteday"] <= str(end_date))]
 
-st.set_option('deprecation.showPyplotGlobalUse', False)
+#st.set_option('deprecation.showPyplotGlobalUse', False)
 
 # Display the selected dataset
 if dataset == "Hourly":
