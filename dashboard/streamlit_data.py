@@ -51,14 +51,14 @@ else:
 # --- Visualization 1 ---
 st.subheader("Bike Rental Count Over Time")
 if dataset == "Hourly":
-    fig, ax = plt.subplots(figsize=(5, 6))
+    fig, ax = plt.subplots(figsize=(10, 4))
     sns.lineplot(data=main_hour, x="hr", y="cnt", ax=ax, palette='coolwarm')
     ax.set_xlabel("Hour")
     ax.set_ylabel("Bike Rental Count")
     ax.set_title("Hourly Bike Rental Count Over Time")
     st.pyplot(fig)
 else:
-    fig, ax = plt.subplots(figsize=(5, 6))
+    fig, ax = plt.subplots(figsize=(10, 4))
     sns.lineplot(data=main_day, x="dteday", y="cnt", ax=ax, palette='coolwarm')
     ax.set_xlabel("Date")
     ax.set_ylabel("Bike Rental Count")
@@ -71,7 +71,7 @@ seasonal_daily_rentals = main_day.groupby(['season', 'mnth'])['cnt'].mean().rese
 
 st.subheader("Bike Rental Count by Season")
 if dataset == "Hourly":
-    fig, ax = plt.subplots(figsize=(5, 6))
+    fig, ax = plt.subplots(figsize=(10, 4))
     for season in seasonal_hourly_rentals['season'].unique():
         season_data = seasonal_hourly_rentals[seasonal_hourly_rentals['season'] == season]
         ax.plot(season_data['hr'], season_data['cnt'], label=f'Season {season}')
@@ -88,7 +88,7 @@ else:
     monthly_rentals_2011 = year_2011.groupby('season')['cnt'].mean().reset_index()
     monthly_rentals_2012 = year_2012.groupby('season')['cnt'].mean().reset_index()
     
-    fig, axes = plt.subplots(1, 2, figsize=(5, 6))
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4))
     sns.barplot(data=monthly_rentals_2011, x='season', y='cnt', ax=axes[0])
     axes[0].set_title('Average Season Rentals in 2011')
     axes[0].set_xlabel('Season')
