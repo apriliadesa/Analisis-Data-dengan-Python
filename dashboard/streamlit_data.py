@@ -2,46 +2,45 @@ import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 import seaborn as sns
-#import folium
-#from streamlit_folium import st_folium
 
 sns.set(style='whitegrid')
 
-# =============================
 # Load the data
-# =============================
 hour_data = pd.read_csv("https://raw.githubusercontent.com/apriliadesa/Analisis-Data-dengan-Python/main/dashboard/hour_data.csv")
 day_data = pd.read_csv("https://raw.githubusercontent.com/apriliadesa/Analisis-Data-dengan-Python/main/dashboard/day_data.csv")
 
-# Sidebar select dataset
+# Sidebar to select dataset
 dataset = st.sidebar.radio("Select Dataset", ("Hourly", "Daily"))
 
-# Preprocessing datetime
-day_data["dteday"] = pd.to_datetime(day_data["dteday"])
+datetime_columns = ["dteday"]
 day_data.sort_values(by="dteday", inplace=True)
-day_data.reset_index(drop=True, inplace=True)
+day_data.reset_index(inplace=True)
 
-# Filter rentang waktu
+for column in datetime_columns:
+    day_data[column] = pd.to_datetime(day_data[column])
+
+# Filter data
 min_date = day_data["dteday"].min()
 max_date = day_data["dteday"].max()
 
 with st.sidebar:
     st.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5d8jv89Aazu1BdpobHA9hgNNs7gbU23VbgujfpjcQ39G-o1479mRQDFPBQMQtrW5mr1Y&usqp=CAU")
     st.write("Kredit : vecteezy")
-
+    
     start_date, end_date = st.date_input(
-        label="Rentang Waktu",
+        label='Rentang Waktu',
         min_value=min_date,
         max_value=max_date,
         value=[min_date, max_date]
     )
 
-main_day = day_data[(day_data["dteday"] >= str(start_date)) & (day_data["dteday"] <= str(end_date))]
-main_hour = hour_data[(hour_data["dteday"] >= str(start_date)) & (hour_data["dteday"] <= str(end_date))]
+main_day = day_data[(day_data["dteday"] >= str(start_date)) & 
+                (day_data["dteday"] <= str(end_date))]
 
-# =============================
-# Dataset Preview
-# =============================
+main_hour = hour_data[(hour_data["dteday"] >= str(start_date)) & 
+                (hour_data["dteday"] <= str(end_date))]
+
+# Display the selected dataset
 if dataset == "Hourly":
     st.header("Hourly Bike Sharing Data")
     st.write(main_hour.head())
@@ -49,82 +48,106 @@ else:
     st.header("Daily Bike Sharing Data")
     st.write(main_day.head())
 
-# =============================
-# Visualization: Bike Rental Count Over Time
-# =============================
+# --- Visualization 1 ---
 st.subheader("Bike Rental Count Over Time")
 if dataset == "Hourly":
     fig, ax = plt.subplots(figsize=(10, 6))
-    sns.lineplot(data=main_hour, x="hr", y="cnt", ax=ax, palette="coolwarm")
+    sns.lineplot(data=main_hour, x="hr", y="cnt", ax=ax, palette='coolwarm')
     ax.set_xlabel("Hour")
     ax.set_ylabel("Bike Rental Count")
     ax.set_title("Hourly Bike Rental Count Over Time")
     st.pyplot(fig)
 else:
     fig, ax = plt.subplots(figsize=(10, 6))
-    sns.lineplot(data=main_day, x="dteday", y="cnt", ax=ax, palette="coolwarm")
+    sns.lineplot(data=main_day, x="dteday", y="cnt", ax=ax, palette='coolwarm')
     ax.set_xlabel("Date")
     ax.set_ylabel("Bike Rental Count")
     ax.set_title("Daily Bike Rental Count Over Time")
     st.pyplot(fig)
 
-# =============================
-# Advanced Analysis Section
-# =============================
-st.header("Advanced Analytics")
+# --- Visualization 2 ---
+seasonal_hourly_rentals = main_hour.groupby(['season', 'hr'])['cnt'].mean().reset_index()
+seasonal_daily_rentals = main_day.groupby(['season', 'mnth'])['cnt'].mean().reset_index()
 
-# --- 1. RFM Analysis (dummy customer data) ---
-st.subheader("RFM Analysis (Dummy Example)")
-dummy_df = pd.DataFrame({
-    "customer_id": [1,1,2,2,3,3,3],
-    "order_date": pd.to_datetime([
-        "2021-07-01","2021-07-20","2021-07-05",
-        "2021-08-10","2021-07-02","2021-07-15","2021-08-01"
-    ]),
-    "amount": [200, 150, 300, 250, 100, 200, 150]
-})
-ref_date = dummy_df["order_date"].max()
-rfm = dummy_df.groupby("customer_id").agg({
-    "order_date": lambda x: (ref_date - x.max()).days,  # Recency
-    "customer_id": "count",  # Frequency
-    "amount": "sum"          # Monetary
-}).rename(columns={"order_date": "Recency", "customer_id": "Frequency", "amount": "Monetary"})
-st.write(rfm)
+st.subheader("Bike Rental Count by Season")
+if dataset == "Hourly":
+    fig, ax = plt.subplots(figsize=(10, 6))
+    for season in seasonal_hourly_rentals['season'].unique():
+        season_data = seasonal_hourly_rentals[seasonal_hourly_rentals['season'] == season]
+        ax.plot(season_data['hr'], season_data['cnt'], label=f'Season {season}')
+    ax.set_xlabel('Hour')
+    ax.set_ylabel('Average Rentals')
+    ax.set_title('Hourly Bike Rentals by Season')
+    ax.legend()
+    ax.grid(True)
+    st.pyplot(fig)
+else:
+    year_2011 = main_day[main_day['yr'] == 2011]
+    year_2012 = main_day[main_day['yr'] == 2012]
 
-# # --- 2. Geospatial Analysis ---
-# st.subheader("Geospatial Analysis (Dummy Example)")
-# locations = [(-6.2, 106.8), (-7.8, 110.4), (-6.9, 107.6)]  # Jakarta, Jogja, Bandung
-# m = folium.Map(location=[-6.5, 107], zoom_start=6)
-# for loc in locations:
-#     folium.Marker(location=loc, popup="Bike Rental Station").add_to(m)
-# st_folium(m, width=700, height=450)
+    monthly_rentals_2011 = year_2011.groupby('season')['cnt'].mean().reset_index()
+    monthly_rentals_2012 = year_2012.groupby('season')['cnt'].mean().reset_index()
+    
+    fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+    sns.barplot(data=monthly_rentals_2011, x='season', y='cnt', ax=axes[0])
+    axes[0].set_title('Average Season Rentals in 2011')
+    axes[0].set_xlabel('Season')
+    axes[0].set_ylabel('Average Rentals')
 
-# --- 3. Clustering (Manual Grouping + Binning) ---
-st.subheader("Clustering tanpa ML")
+    sns.barplot(data=monthly_rentals_2012, x='season', y='cnt', ax=axes[1])
+    axes[1].set_title('Average Season Rentals in 2012')
+    axes[1].set_xlabel('Season')
+    axes[1].set_ylabel('Average Rentals')
 
-# Group jam menjadi kategori waktu
-def time_group(hour):
-    if 0 <= hour < 7:
-        return "Dini Hari"
-    elif 7 <= hour < 13:
-        return "Pagi"
-    elif 13 <= hour < 19:
-        return "Siang"
-    else:
-        return "Malam"
+    fig.tight_layout()
+    st.pyplot(fig)
 
-main_hour["time_group"] = main_hour["hr"].apply(time_group)
+# --- Visualization 3 ---
+month_order = ["January", "February", "March", "April", "May", "June", "July",
+               "August", "September", "October", "November", "December"]
 
-# Binning demand (cnt)
-bins = [0, 100, 500, main_hour["cnt"].max()]
-labels = ["Low", "Medium", "High"]
-main_hour["demand_group"] = pd.cut(main_hour["cnt"], bins=bins, labels=labels, include_lowest=True)
+st.subheader("Bike Rental Count by Month")
+if dataset == "Hourly":
+    year_2011_hour = main_hour[main_hour['yr'] == 2011]
+    year_2012_hour = main_hour[main_hour['yr'] == 2012]
+    
+    monthly_rentals_2011_hour = year_2011_hour.groupby('mnth')['cnt'].mean().reset_index()
+    monthly_rentals_2012_hour = year_2012_hour.groupby('mnth')['cnt'].mean().reset_index()
+        
+    fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+    sns.barplot(data=monthly_rentals_2011_hour, x='mnth', y='cnt', ax=axes[0], order=month_order)
+    axes[0].set_title('Average Monthly Rentals in 2011')
+    axes[0].set_xlabel('Month')
+    axes[0].set_ylabel('Average Rentals')
+    axes[0].tick_params(axis='x', rotation=45)
+    
+    sns.barplot(data=monthly_rentals_2012_hour, x='mnth', y='cnt', ax=axes[1], order=month_order)
+    axes[1].set_title('Average Monthly Rentals in 2012')
+    axes[1].set_xlabel('Month')
+    axes[1].set_ylabel('Average Rentals')
+    axes[1].tick_params(axis='x', rotation=45)
 
-st.write("Preview dengan Clustering Manual:")
-st.write(main_hour[["hr", "cnt", "time_group", "demand_group"]].head())
+    fig.tight_layout()
+    st.pyplot(fig)
+else:
+    year_2011_daily = main_day[main_day['yr'] == 2011]
+    year_2012_daily = main_day[main_day['yr'] == 2012]
+    
+    monthly_rentals_2011_daily = year_2011_daily.groupby('mnth')['cnt'].mean().reset_index()
+    monthly_rentals_2012_daily = year_2012_daily.groupby('mnth')['cnt'].mean().reset_index()
+        
+    fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+    sns.barplot(data=monthly_rentals_2011_daily, x='mnth', y='cnt', ax=axes[0], order=month_order)
+    axes[0].set_title('Average Monthly Rentals in 2011')
+    axes[0].set_xlabel('Month')
+    axes[0].set_ylabel('Average Rentals')
+    axes[0].tick_params(axis='x', rotation=45)
+    
+    sns.barplot(data=monthly_rentals_2012_daily, x='mnth', y='cnt', ax=axes[1], order=month_order)
+    axes[1].set_title('Average Monthly Rentals in 2012')
+    axes[1].set_xlabel('Month')
+    axes[1].set_ylabel('Average Rentals')
+    axes[1].tick_params(axis='x', rotation=45)
 
-# Visualisasi clustering
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.countplot(data=main_hour, x="time_group", hue="demand_group", ax=ax)
-ax.set_title("Distribusi Demand berdasarkan Kelompok Waktu")
-st.pyplot(fig)
+    fig.tight_layout()
+    st.pyplot(fig)
